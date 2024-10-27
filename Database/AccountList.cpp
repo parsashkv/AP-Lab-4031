@@ -83,25 +83,35 @@ Account& AccountList::at(int index)
 }
 
 
-void AccountList::sort()
+Account *merge(Account *first, Account *second)
 {
 
-    int n = size;
-    bool swapped;
-
-    for (int i = 0; i < n - 1; i++) {
-        swapped = false;
-        for (int j = 0; j < n - i - 1; j++) {
-            if (this->at(j).getUniqeId() > this->at(j + 1).getUniqeId()) {
-                swap(at(j), at(j + 1));
-                swapped = true;
-            }
-        }
-
-        if (!swapped)
-            break;
+    if (first == nullptr) return second;
+    if (second == nullptr) return first;
+    {
+        first->next = merge(first->next, second);
+        return first;
     }
+    else {
+        second->next = merge(first, second->next);
+        return second;
+    }
+}
 
+Account *MergeSort(Account *head)
+{
+    if (head == nullptr || head->next == nullptr)
+        return head;
+
+// Split the list into two halves
+    Node *second = split(head);
+
+// Recursively sort each half
+    head = MergeSort(head);
+    second = MergeSort(second);
+
+// Merge the two sorted halves
+    return merge(head, second);
 }
 
 
